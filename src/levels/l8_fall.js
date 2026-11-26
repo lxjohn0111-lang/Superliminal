@@ -18,7 +18,7 @@ export default {
   cranes: 3,
   floorY: 0,
   hints: [
-    'Grab the plank from the desk up close. Look across the gap with its long side pointing away from you (rotate with Q) and drop it so it lands spanning both islands.',
+    'Grab the plank while standing right at the desk. Walk to the edge of the island, look down across the gap toward the lower island, and drop it — it should land resting on both islands.',
     'From the second island, find the spot where the floating fragments line up into a staircase. Try near the lone lamp.',
     'Use the step stool to climb onto the last island. Grab it close, drop it a few metres away against the wall so the tall step faces the wall.',
   ],
@@ -38,9 +38,9 @@ export default {
 
     // A: start island — an office floor that came loose
     island(L, -4, -4, 4, 4, 0);
-    D.desk(1.8, -2.4, 0, { w: 1.8, d: 0.8 });
-    L.prop('plank', [1.8, 0.75, -2.4], { rotY: Math.PI / 2, id: 'plank' });
-    D.officeChair(1.8, -1.6, 0);
+    D.desk(0.6, -2.0, 0, { w: 2.4, d: 0.8 });
+    L.prop('plank', [0.6, 0.75, -2.0], { rotY: 0, id: 'plank' });
+    D.officeChair(-0.4, -2.75, Math.PI);
     D.plant(-3.4, 3.3, { size: 1.0, seed: 81 });
     D.floorLamp(-3.3, -3.3, { light: false });
     L.box([2.8, 0, 2.9], [3.8, 2.3, 3.8], 'metalDark');
@@ -50,10 +50,10 @@ export default {
     L.box([-1.31, 2.3, 3.7], [1.31, 2.42, 3.82], 'trim');
 
     // B: second island, 6 m gap
-    island(L, -4, -18, 4, -10, 0);
-    D.floorLamp(3.0, -11.0, { light: true, intensity: 3 });
-    D.bench(-2.5, -11.2, Math.PI / 2, { w: 1.4 });
-    D.plant(-3.3, -17.2, { size: 0.9, seed: 82 });
+    island(L, -4, -17, 4, -9, -0.6);
+    D.floorLamp(3.0, -10.0, { y: -0.6, light: true, intensity: 3 });
+    D.bench(-2.5, -10.2, Math.PI / 2, { w: 1.4, y: -0.6 });
+    D.plant(-3.3, -16.2, { y: -0.6, size: 0.9, seed: 82 });
     // E: side island with a crane (needs the plank again)
     island(L, 9, -16, 12.5, -12, 0, 'woodfloor');
     L.crane([10.8, 1.0, -14.0]);
@@ -61,10 +61,10 @@ export default {
 
     // Illusion staircase: B -> C (8 m, +3 m)
     const steps = [];
-    for (let i = 0; i < 8; i++) steps.push({ min: [-0.8, -0.15 + i * 0.375, -18 - (i + 1) * 1.0], max: [0.8, (i + 1) * 0.375, -18 - i * 1.0] });
+    for (let i = 0; i < 9; i++) steps.push({ min: [-0.8, -0.75 + i * 0.4, -17 - (i + 1) * 1.0], max: [0.8, -0.6 + (i + 1) * 0.4, -17 - i * 1.0] });
     const bounds = new THREE.Box3(new THREE.Vector3(-14, -6, -40), new THREE.Vector3(14, 14, -6));
     L.illusion({
-      view: [3.0, 1.64, -11.6], seed: 51, bounds, chunks: 24, marker: false, floorY: 0, nearBias: 0.4,
+      view: [3.0, 1.04, -10.6], seed: 51, bounds, chunks: 26, marker: false, floorY: -0.6, nearBias: 0.4,
       source: () => {
         const g = new THREE.Group();
         for (const s of steps) {
@@ -76,7 +76,7 @@ export default {
       onSolid: (LL) => { for (const s of steps) LL.solidBox(s.min, s.max, 'marble'); },
       onSolve: (LL) => { LL.setStage(2); LL.say(['A bridge made of paying attention.', 'The best kind. Also the only kind, out here.'], { id: 'bridge' }); },
     });
-    L.crane([-1.35, 2.75, -22.5]);
+    L.crane([-1.35, 2.6, -22.5]);
 
     // C: high island (y = 3) and D: higher still (y = 5.4) with the exit
     island(L, -3, -34, 3, -26, 3);
@@ -90,9 +90,9 @@ export default {
     L.ambient(0xd9e8ff, 0xb0a890, 0.5);
     L.sun([0.45, -0.8, 0.55], { color: 0xfff1d8, intensity: 3.0, size: 26, center: [0, 0, -18] });
 
-    L.checkpoint([-4, -1, -18], [4, 3, -10], [0, 0, -11], 0);
+    L.checkpoint([-4, -1.6, -17], [4, 2.4, -9], [0, -0.6, -10], 0);
     L.checkpoint([-3, 2, -34], [3, 6, -26], [0, 3, -27], 0);
-    L.trigger([-4, -1, -18], [4, 3, -10], (LL) => { LL.setStage(1); LL.say(['There is no bridge to the next island.', 'Not from here, anyway.'], { id: 'onB' }); });
+    L.trigger([-4, -1.6, -17], [4, 2.4, -9], (LL) => { LL.setStage(1); LL.say(['There is no bridge to the next island.', 'Not from here, anyway.'], { id: 'onB' }); });
     L.trigger([-3, 2, -34], [3, 6, -26], (LL) => LL.say('Nearly there. One more step. Possibly a stool.', { id: 'onC' }));
   },
   onStart(L) {

@@ -66,6 +66,8 @@ export class GrabSystem {
     const qy = this.yawQuat(new THREE.Quaternion());
     this.relQuat.copy(qy).invert().multiply(prop.group.quaternion);
     this.computeUpright();
+    // Long objects (planks) swing round to point where you look, so bridging is intuitive.
+    if (prop.def.alignForward) this.uprightQuat.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
     this.extraYaw = 0; this.extraYawTarget = 0;
     this.t = d0; this.tTarget = d0;
     this.startScale = prop.scale;

@@ -37,7 +37,7 @@ export default {
     D.plant(3.0, -9.4, { size: 1.0, seed: 93 });
     L.prop('pillow', [-2.45, 0.56, -1.2]);
     L.prop('book', [-3.0, 0.5, 0.4], { variant: 3, rotY: 1.0 });
-    L.plate('wake', { x: -1.2, z: -8.3, need: 1000, size: 1.6, label: 'WAKE' });
+    L.plate('wake', { x: -1.2, z: -8.3, need: 700, size: 1.6, label: 'WAKE' });
     L.door('d1', { x: 1.6, z: -10.1, w: 1.4, h: 2.3, plates: ['wake'], sticky: true, leafMat: 'woodPale', frameMat: 'brass' });
     L.crane([3.0, 2.3, 1.0]);
     // dawn light through the windows
@@ -52,7 +52,7 @@ export default {
       openings: { n: [{ at: 0, w: 1.6, h: 2.6 }] } });
     // Exit hidden behind a blank wall until the final illusion is solved.
     L.exit(0, -36, 'n', { y: 0, w: 1.6, h: 2.6, wallMat: 'paintWhite', sign: false });
-    const exhibits = [['cube', 'I. Intake', 1.6], ['mug', 'II. Overtime', 3.0], ['die', 'III. The Gallery', 2.2], ['lantern', 'IV. Nocturne', 1.6], ['echo', 'V. Echoes', 1.6], ['duck', 'VI. The Deep End', 2.6], ['toydoor', 'VII. The Nursery', 1.2], ['plank', 'VIII. The Long Fall', 0.6]];
+    const exhibits = [['cube', 'I. Intake', 1.6], ['mug', 'II. Overtime', 3.0], ['die', 'III. The Gallery', 2.2], ['lantern', 'IV. Nocturne', 1.6], ['echo', 'V. Echoes', 1.6], ['duck', 'VI. The Deep End', 2.6], ['toydoor', 'VII. The Nursery', 1.2], ['plank', 'VIII. The Long Fall', 0.45]];
     exhibits.forEach(([type, label, sc], i) => {
       const side = i % 2 === 0 ? -1 : 1;
       const z = -13 - Math.floor(i / 2) * 5.0 - (side > 0 ? 2.5 : 0);

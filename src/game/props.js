@@ -156,17 +156,19 @@ export class PropSystem {
       // Buoyancy & drag.
       const water = level.waterAt(t.x, t.z);
       if (water) {
-        const c = this.centerOf(p, _v);
+        // Centre from the physics body (not the interpolated mesh) for a stable float.
+        _q.set(r.x, r.y, r.z, r.w);
+        const c = _v.copy(p.centerLocal).multiplyScalar(p.scale).applyQuaternion(_q).add(p.curPos);
         const h = Math.max(0.02, p.sizeLocal.y * p.scale * 0.5);
         const f = Math.max(0, Math.min(1, (water.y - (c.y - h)) / (2 * h)));
         if (f > 0) {
           if (!p.inWater && lv.y < -1.5) { const sz = p.sizeLocal.x * p.scale; audio.splash(sz); level.splash && level.splash(c, sz); }
           p.inWater = true;
           const m = p.body.mass();
-          const lift = p.def.floats ? 2.3 : 0.25;
+          const lift = p.def.floats ? 3.0 : 0.25;
           const up = m * 9.81 * f * lift * dt;
-          const drag = m * f * dt;
-          p.body.applyImpulse({ x: -lv.x * drag * 2.5, y: up - lv.y * drag * 2.0, z: -lv.z * drag * 2.5 }, true);
+          const drag = m * Math.min(1, f * 2) * dt;
+          p.body.applyImpulse({ x: -lv.x * drag * 2.5, y: up - lv.y * drag * (p.def.floats ? 4.0 : 2.0), z: -lv.z * drag * 2.5 }, true);
           const av = p.body.angvel();
           const k = Math.max(0, 1 - f * dt * 3);
           p.body.setAngvel({ x: av.x * k, y: av.y * k, z: av.z * k }, true);

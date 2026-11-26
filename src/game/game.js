@@ -354,7 +354,12 @@ export class Game {
   toastHint(text) { this.hud.showHint(text, 6); }
   flash() { this.hud.flash(); }
   shake(a) { this.shakeAmt = Math.max(this.shakeAmt, a); }
-  setExitGlow(v) { if (!this.completing && !this.transitioning) this.hud.glow(v); }
+  setExitGlow(v) {
+    if (this.completing || this.transitioning) return;
+    if (v < 0.005 && (this._lastGlow || 0) < 0.005) return;
+    this._lastGlow = v;
+    this.hud.glow(v);
+  }
 
   // Debug helpers (used by automated tests; harmless in production).
   debugEngage() { this.input.locked = true; this.started = true; this.hud.clickToPlay(false); this.onFirstEngage(); }

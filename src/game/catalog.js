@@ -287,9 +287,9 @@ export const CATALOG = {
     colliders: [{ t: 'box', h: [0.12, 0.22, 0.025], o: [0, 0.22, 0] }],
   },
   plank: {
-    name: 'Plank', density: 450, sound: 'wood', size: [1.2, 0.05, 0.26],
-    build() { return mesh(roundedBox(1.2, 0.05, 0.26, 0.008, 2), mat('woodPale'), { pos: [0, 0.025, 0] }); },
-    colliders: [{ t: 'box', h: [0.6, 0.025, 0.13], o: [0, 0.025, 0] }],
+    name: 'Plank', density: 450, sound: 'wood', size: [2.0, 0.05, 0.26], alignForward: true,
+    build() { return mesh(roundedBox(2.0, 0.05, 0.26, 0.008, 2), mat('woodPale'), { pos: [0, 0.025, 0] }); },
+    colliders: [{ t: 'box', h: [1.0, 0.025, 0.13], o: [0, 0.025, 0] }],
   },
   chair: {
     name: 'Chair', density: 120, sound: 'wood', size: [0.44, 0.9, 0.44],

@@ -23,7 +23,7 @@ export default {
 
     // ---------------------------------------------------------------- Nursery
     L.room({ x0: -6, x1: 6, z0: -8, z1: 4, h: 3.4, floor: 'woodfloor', wall: 'wallpaperBlue', ceil: 'paintWhite', crown: true, walls: { n: false, s: true, e: true, w: true } });
-    L.doorWall('dw', { axis: 'z', at: -8.15, a0: -6.25, a1: 6.25, y0: 0, y1: 3.4, t: 0.3, material: 'paintSky', minH: 1.9,
+    L.doorWall('dw', { axis: 'z', at: -8.15, a0: -6.25, a1: 6.25, y0: 0, y1: 3.4, t: 0.3, material: 'paintSky', minH: 1.88,
       onOpen: (LL) => { LL.setStage(1); LL.say(['A door. Where there was not one.', 'That is not a trick. That is architecture.'], { id: 'dooropen' }); } });
     // clouds painted on the sky wall
     const cloudM = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9 });

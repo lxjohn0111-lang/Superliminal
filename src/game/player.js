@@ -37,11 +37,11 @@ export class Player {
     cc.setUp({ x: 0, y: 1, z: 0 });
     cc.setMaxSlopeClimbAngle(50 * Math.PI / 180);
     cc.setMinSlopeSlideAngle(55 * Math.PI / 180);
-    cc.enableAutostep(0.33, 0.1, true);
+    cc.enableAutostep(0.42, 0.12, true);
     cc.enableSnapToGround(0.28);
     cc.setSlideEnabled(true);
     cc.setApplyImpulsesToDynamicBodies(true);
-    cc.setCharacterMass(35);
+    cc.setCharacterMass(18);
     this.teleport(pos, yaw);
   }
 
@@ -125,7 +125,7 @@ export class Player {
         this.game.audio.land(0.4 + s);
         this.footstep(0.9);
       }
-      if (this.vel.y < 0) this.vel.y = -0.5;
+      if (this.vel.y < 0) this.vel.y = -0.3;
       this.airTime = 0;
     } else {
       this.airTime += dt;

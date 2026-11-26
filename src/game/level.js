@@ -440,8 +440,9 @@ export class Level {
         const d2 = Math.max(0.3, c.distanceToSquared(new THREE.Vector3(s.x, s.y, s.z)));
         const dir = new THREE.Vector3(s.x - c.x, s.y - c.y, s.z - c.z); const dl = dir.length(); dir.divideScalar(dl);
         const r0 = p.sizeLocal.y * p.scale * 0.55;
-        const hit = L.physics.castRay({ x: c.x + dir.x * r0, y: c.y + dir.y * r0, z: c.z + dir.z * r0 }, { x: dir.x, y: dir.y, z: dir.z }, Math.max(0, dl - r0 - 0.25));
-        if (hit) { const inf = L.physics.info.get(hit.collider.handle); if (!(inf && inf.prop === p)) continue; }
+        // Light reaches the flower unless something blocks it well before the bloom (hits right at the flower's base count).
+        const hit = L.physics.castRay({ x: c.x + dir.x * r0, y: c.y + dir.y * r0, z: c.z + dir.z * r0 }, { x: dir.x, y: dir.y, z: dir.z }, Math.max(0, dl - r0 - 0.7), undefined, p.body);
+        if (hit) continue;
         I += (p.scale * p.scale) * 2.0 / d2;
       }
       s.level = I;
@@ -603,7 +604,7 @@ export class Level {
     props.setHeld(p, true); // kinematic, no collisions
     p.group.position.copy(pos); p.group.quaternion.copy(quat);
     const inner = 0.9 * W;
-    dw.build({ a: along - inner / 2, b: along + inner / 2, top: dw.y0 + H * 0.96 });
+    dw.build({ a: along - inner / 2, b: along + inner / 2, top: dw.y0 + H * 0.98 });
     this.game.audio.illusionSnap();
     this.game.flash();
     const hinge = p.hinge;
