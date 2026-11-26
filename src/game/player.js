@@ -102,11 +102,17 @@ export class Player {
     const heldBody = this.game.grab && this.game.grab.held ? this.game.grab.held.body : null;
     cc.computeColliderMovement(this.collider, desired, R.QueryFilterFlags.EXCLUDE_SENSORS, G_PLAYER,
       heldBody ? (c) => c.parent() !== heldBody : undefined);
-    const mv = cc.computedMovement();
+    let mv = cc.computedMovement();
     const wasGrounded = this.grounded;
     this.grounded = cc.computedGrounded();
 
     const t = this.body.translation();
+    // Manual step-up: if walking into a low ledge (stairs, small objects), lift over it.
+    const wantH = Math.hypot(desired.x, desired.z), gotH = Math.hypot(mv.x, mv.z);
+    if ((wasGrounded || this.grounded) && wantH > 1e-4 && gotH < wantH * 0.4 && this.vel.y <= 0.1) {
+      const stepped = this.tryStepUp(t, desired, heldBody);
+      if (stepped) { mv = stepped; this.grounded = true; }
+    }
     const nc = { x: t.x + mv.x, y: t.y + mv.y, z: t.z + mv.z };
     this.body.setNextKinematicTranslation(nc);
     this.feet.set(nc.x, nc.y - this.halfH - this.radius, nc.z);
@@ -152,6 +158,30 @@ export class Player {
     this.bobAmp += ((this.grounded ? Math.min(1, hs / 4) : 0) - this.bobAmp) * Math.min(1, dt * 8);
     this.hSpeed = hs;
     this.strafe = ctl.mx;
+  }
+
+  tryStepUp(t, desired, heldBody) {
+    const cc = this.cc, w = this.physics.world, flags = R.QueryFilterFlags.EXCLUDE_SENSORS;
+    const pred = heldBody ? (c) => c.parent() !== heldBody : undefined;
+    const MAX = 0.46;
+    const restore = () => { this.body.setTranslation(t, true); w.propagateModifiedBodyPositionsToColliders(); };
+    cc.computeColliderMovement(this.collider, { x: 0, y: MAX, z: 0 }, flags, G_PLAYER, pred);
+    const up = cc.computedMovement().y;
+    if (up < 0.08) return null;
+    this.body.setTranslation({ x: t.x, y: t.y + up, z: t.z }, true); w.propagateModifiedBodyPositionsToColliders();
+    const h = Math.hypot(desired.x, desired.z), k = Math.max(1, 0.06 / h);
+    cc.computeColliderMovement(this.collider, { x: desired.x * k, y: 0, z: desired.z * k }, flags, G_PLAYER, pred);
+    const fwd = cc.computedMovement();
+    if (Math.hypot(fwd.x, fwd.z) < h * 0.5) { restore(); return null; }
+    this.body.setTranslation({ x: t.x + fwd.x, y: t.y + up, z: t.z + fwd.z }, true); w.propagateModifiedBodyPositionsToColliders();
+    cc.computeColliderMovement(this.collider, { x: 0, y: -(up + 0.05), z: 0 }, flags, G_PLAYER, pred);
+    const down = cc.computedMovement().y;
+    restore();
+    const rise = up + down;
+    if (rise < 0.02 || rise > MAX) return null;
+    // Only keep the horizontal distance we actually wanted this step.
+    const s = Math.min(1, h / Math.max(1e-4, Math.hypot(fwd.x, fwd.z)));
+    return { x: fwd.x * s, y: rise, z: fwd.z * s };
   }
 
   footstep(str) {
