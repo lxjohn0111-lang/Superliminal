@@ -81,6 +81,8 @@ export class Platform {
 
   // ---- persistence (SDK data module when present, localStorage mirror otherwise) ----
   load() {
+    const hot = window.__hotData && window.__hotData.save;
+    if (hot && typeof hot === 'object') return hot;
     let raw = null;
     try { if (this.sdk && this.sdk.data) raw = this.sdk.data.getItem(SAVE_KEY); } catch (e) { /* ignore */ }
     if (!raw) { try { raw = window.localStorage.getItem(SAVE_KEY); } catch (e) { /* ignore */ } }

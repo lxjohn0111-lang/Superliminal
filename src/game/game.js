@@ -63,6 +63,7 @@ export class Game {
     }
 
     this.input.onLockChange = (locked, err) => this.onLockChange(locked, err);
+    this.input.onDragMode = () => this.hud.toast({ kicker: 'Controls', title: 'Drag to look around', desc: 'This page can\'t capture the mouse. Hold and drag to look, click to grab.', icon: '✋' });
     this.input.onPauseRequest = () => { if (this.started && !this.menu.open && !this.transitioning) this.pause(); };
     this.platform.onAdStart = () => { this.audio.suspendAll(true); };
     this.platform.onAdEnd = () => { this.audio.suspendAll(false); };

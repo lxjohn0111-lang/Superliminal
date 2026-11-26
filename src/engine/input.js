@@ -18,51 +18,80 @@ export class Input {
     this.onLockChange = null;
     this.onPauseRequest = null;
     this.gpPrev = {};
+    this.dragMode = false;      // fallback when pointer lock is unavailable (sandboxed pages)
+    this.everLocked = false;
+    this.onDragMode = null;
+    this.dragDist = 0;
 
     window.addEventListener('keydown', (e) => {
       if (e.repeat) { if (this.enabled && this.locked) e.preventDefault(); return; }
       const k = e.code;
       this.keys.add(k); this.pressed.add(k);
       if (['Space', 'ArrowUp', 'ArrowDown', 'Tab'].includes(k) && this.locked) e.preventDefault();
-      if (k === 'KeyP' && this.onPauseRequest && this.locked) this.onPauseRequest('key');
+      if ((k === 'KeyP' || (k === 'Escape' && this.dragMode)) && this.onPauseRequest && this.locked) this.onPauseRequest('key');
     });
     window.addEventListener('keyup', (e) => { this.keys.delete(e.code); });
     window.addEventListener('blur', () => { this.keys.clear(); this.mouseDown = false; });
 
     document.addEventListener('mousemove', (e) => {
       if (!this.locked) return;
+      if (this.dragMode) {
+        if (!(e.buttons & 3)) return;
+        this.dragDist += Math.abs(e.movementX) + Math.abs(e.movementY);
+        this.lookDX += e.movementX * 1.6; this.lookDY += e.movementY * 1.6;
+        return;
+      }
       // Guard against occasional pointer-lock spikes in some browsers.
       if (Math.abs(e.movementX) > 400 || Math.abs(e.movementY) > 400) return;
       this.lookDX += e.movementX; this.lookDY += e.movementY;
     });
     canvas.addEventListener('mousedown', (e) => {
       if (!this.locked) return;
-      if (e.button === 0) { this.mouseDown = true; this.clicked = true; }
+      if (e.button === 0) { this.mouseDown = true; if (this.dragMode) this.dragDist = 0; else this.clicked = true; }
       if (e.button === 2) this.pressed.add('Mouse2');
     });
-    window.addEventListener('mouseup', (e) => { if (e.button === 0) this.mouseDown = false; });
+    window.addEventListener('mouseup', (e) => {
+      if (e.button !== 0) return;
+      // In drag-to-look mode a click (not a drag) grabs / drops.
+      if (this.dragMode && this.mouseDown && this.locked && this.dragDist < 8) this.clicked = true;
+      this.mouseDown = false;
+    });
     canvas.addEventListener('contextmenu', (e) => e.preventDefault());
     window.addEventListener('wheel', (e) => { if (this.locked) this.wheel += Math.sign(e.deltaY); }, { passive: true });
 
     document.addEventListener('pointerlockchange', () => {
+      if (this.dragMode) return;
       this.locked = document.pointerLockElement === canvas;
+      if (this.locked) this.everLocked = true;
       if (!this.locked) { this.keys.clear(); this.mouseDown = false; }
       if (this.onLockChange) this.onLockChange(this.locked);
     });
-    document.addEventListener('pointerlockerror', () => { if (this.onLockChange) this.onLockChange(false, true); });
+    document.addEventListener('pointerlockerror', () => {
+      // Never managed to lock (e.g. a sandboxed frame): fall back to drag-to-look.
+      if (!this.everLocked) { this.enableDragMode(); return; }
+      if (this.onLockChange) this.onLockChange(false, true);
+    });
 
     this.setupTouch();
   }
 
+  enableDragMode() {
+    if (!this.dragMode) { this.dragMode = true; if (this.onDragMode) this.onDragMode(); }
+    this.locked = true;
+    if (this.onLockChange) this.onLockChange(true);
+  }
+
   requestLock() {
     if (this.isTouch) { this.locked = true; if (this.onLockChange) this.onLockChange(true); return; }
+    if (this.dragMode || !this.canvas.requestPointerLock) { this.enableDragMode(); return; }
+    const fail = () => { if (!this.everLocked) this.enableDragMode(); };
     try {
       const p = this.canvas.requestPointerLock({ unadjustedMovement: false });
-      if (p && p.catch) p.catch(() => { try { this.canvas.requestPointerLock(); } catch (e) { /* ignore */ } });
-    } catch (e) { /* ignore */ }
+      if (p && p.catch) p.catch(() => { try { const q = this.canvas.requestPointerLock(); if (q && q.catch) q.catch(fail); } catch (e) { fail(); } });
+    } catch (e) { fail(); }
   }
   exitLock() {
-    if (this.isTouch) { this.locked = false; if (this.onLockChange) this.onLockChange(false); return; }
+    if (this.isTouch || this.dragMode) { this.locked = false; this.mouseDown = false; if (this.onLockChange) this.onLockChange(false); return; }
     if (document.pointerLockElement) document.exitPointerLock();
   }
 
