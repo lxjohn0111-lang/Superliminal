@@ -81,6 +81,11 @@ export class Level {
     msh.castShadow = true; msh.receiveShadow = true;
     this.root.add(msh);
     const col = collide ? this.physics.addStaticBox(cx, cy, cz, w / 2, h / 2, d / 2, null, { kind: 'static', sound: m.userData.sound }) : null;
+    // If geometry materialises around the player, lift them onto it instead of trapping them.
+    const pl = this.game.player, f = pl.feet, r = pl.radius;
+    if (collide && f.x > min[0] - r && f.x < max[0] + r && f.z > min[2] - r && f.z < max[2] + r && f.y > min[1] - 1.7 && f.y < max[1]) {
+      pl.teleport([f.x, max[1] + 0.02, f.z], null);
+    }
     return { mesh: msh, col };
   }
 
