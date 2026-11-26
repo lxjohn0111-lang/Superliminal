@@ -61,7 +61,7 @@ export default {
 
     // Illusion staircase: B -> C (8 m, +3 m)
     const steps = [];
-    for (let i = 0; i < 9; i++) steps.push({ min: [-0.8, -0.75 + i * 0.4, -17 - (i + 1) * 1.0], max: [0.8, -0.6 + (i + 1) * 0.4, -17 - i * 1.0] });
+    for (let i = 0; i < 14; i++) steps.push({ min: [-0.8, -0.75 + i * (3.6 / 14), -17 - (i + 1) * (9 / 14)], max: [0.8, -0.6 + (i + 1) * (3.6 / 14), -17 - i * (9 / 14)] });
     const bounds = new THREE.Box3(new THREE.Vector3(-14, -6, -40), new THREE.Vector3(14, 14, -6));
     L.illusion({
       view: [3.0, 1.04, -10.6], seed: 51, bounds, chunks: 26, marker: false, floorY: -0.6, nearBias: 0.4,

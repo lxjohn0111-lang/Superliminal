@@ -81,7 +81,7 @@ export default {
     D.sign('A HIGHER PERSPECTIVE', 4.5, 0.75, -7.98, 0, { w: 0.8, h: 0.12, bg: '#f7f4ee', color: '#3a3530', font: 'italic 600 40px Cormorant, Georgia' });
 
     // Illusion 2: staircase to the balcony
-    const steps = stairs({ x: -3.2, zStart: -8.6, steps: 10, rise: 0.34, run: 1.0, width: 1.6, material: 'woodPale' });
+    const steps = stairs({ x: -3.2, zStart: -8.6, steps: 14, rise: 3.4 / 14, run: 0.71, width: 1.6, material: 'woodPale' });
     const bounds2 = new THREE.Box3(new THREE.Vector3(-6.8, 0.05, -21.5), new THREE.Vector3(6.8, 7.6, -6.5));
     L.illusion({
       view: [4.5, 1.26 + 1.64, -8.5], seed: 23, bounds: bounds2, chunks: 26, marker: false, floorY: 1.26, nearBias: 0.35,
