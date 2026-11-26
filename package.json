@@ -1,0 +1,22 @@
+{
+  "name": "lucid-angles",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A first-person forced-perspective puzzle game for the browser (CrazyGames SDK v3).",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs --watch --serve"
+  },
+  "dependencies": {
+    "@dimforge/rapier3d-compat": "^0.19.3",
+    "n8ao": "^2.1.0",
+    "postprocessing": "^6.39.0",
+    "three": "^0.182.0"
+  },
+  "devDependencies": {
+    "@fontsource/cormorant-garamond": "^5.1.0",
+    "@fontsource/inter": "^5.1.0",
+    "esbuild": "^0.25.0"
+  }
+}
