@@ -393,14 +393,14 @@ export class Decor {
   sky(kind = 'day') {
     const g = new THREE.SphereGeometry(400, 48, 24);
     const uniforms = {
-      top: { value: new THREE.Color(kind === 'night' ? 0x050a1a : kind === 'dusk' ? 0x2b3c6e : 0x5d9be0) },
-      mid: { value: new THREE.Color(kind === 'night' ? 0x101c3a : kind === 'dusk' ? 0xe89a7a : 0xbfdcf5) },
-      bot: { value: new THREE.Color(kind === 'night' ? 0x1a2440 : kind === 'dusk' ? 0xf5cfa0 : 0xf4efe6) },
+      top: { value: new THREE.Color(kind === 'night' ? 0x16224a : kind === 'dusk' ? 0x2b3c6e : 0x5d9be0) },
+      mid: { value: new THREE.Color(kind === 'night' ? 0x2e4580 : kind === 'dusk' ? 0xe89a7a : 0xbfdcf5) },
+      bot: { value: new THREE.Color(kind === 'night' ? 0x3a4c78 : kind === 'dusk' ? 0xf5cfa0 : 0xf4efe6) },
       stars: { value: kind === 'night' ? 1 : 0 },
       sunDir: { value: new THREE.Vector3(0.3, 0.25, -0.9).normalize() },
       sunCol: { value: new THREE.Color(kind === 'night' ? 0xdfe8ff : 0xfff1d0) },
       sunSize: { value: kind === 'night' ? 0.9992 : 0.9985 },
-      intensity: { value: kind === 'night' ? 1.0 : 1.6 },
+      intensity: { value: kind === 'night' ? 1.5 : 1.6 },
     };
     const m = new THREE.ShaderMaterial({
       uniforms, side: THREE.BackSide, depthWrite: false, fog: false,
@@ -410,7 +410,7 @@ export class Decor {
         void main(){ float y = vDir.y; vec3 c = y > 0.0 ? mix(mid, top, pow(y, 0.6)) : mix(mid, bot, pow(-y, 0.5));
           float sd = dot(normalize(vDir), sunDir);
           c += sunCol * smoothstep(sunSize, sunSize + 0.0004, sd) * 6.0;
-          c += sunCol * pow(max(sd, 0.0), 60.0) * 0.35;
+          c += sunCol * (pow(max(sd, 0.0), 60.0) * 0.35 + pow(max(sd, 0.0), 6.0) * 0.06);
           if (stars > 0.5) { vec3 q = floor(vDir * 700.0); float s = h(q); c += vec3(0.9,0.95,1.0) * step(0.9985, s) * smoothstep(-0.05, 0.3, y) * (0.3 + 0.7*h(q+3.0)) * 0.9; }
           gl_FragColor = vec4(c * intensity, 1.0); }`,
     });
