@@ -446,7 +446,7 @@ export class Level {
         const dir = new THREE.Vector3(s.x - c.x, s.y - c.y, s.z - c.z); const dl = dir.length(); dir.divideScalar(dl);
         const r0 = p.sizeLocal.y * p.scale * 0.55;
         // Light reaches the flower unless something blocks it well before the bloom (hits right at the flower's base count).
-        const hit = L.physics.castRay({ x: c.x + dir.x * r0, y: c.y + dir.y * r0, z: c.z + dir.z * r0 }, { x: dir.x, y: dir.y, z: dir.z }, Math.max(0, dl - r0 - 0.7), undefined, p.body);
+        const hit = L.physics.castRay({ x: c.x + dir.x * r0, y: c.y + dir.y * r0, z: c.z + dir.z * r0 }, { x: dir.x, y: dir.y, z: dir.z }, Math.max(0, dl - r0 - 0.9), undefined, p.body);
         if (hit) continue;
         I += (p.scale * p.scale) * 2.0 / d2;
       }

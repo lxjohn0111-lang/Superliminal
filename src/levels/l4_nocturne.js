@@ -9,6 +9,7 @@ export default {
   par: [120, 240],
   cranes: 3,
   floorY: 0,
+  noAO: true, // open night sky: screen-space AO would smear onto the background
   hints: [
     'The flower on top of the stone pillar opens when enough light reaches it. Grab the paper lantern up close, then drop it a couple of steps in front of the pillar from far away, so it lands huge and can shine up at the flower.',
     'Carry the lantern with you through the hedge maze. A moon orb is waiting in the far west corridor.',
@@ -39,8 +40,8 @@ export default {
     D.hedge(-14, -6.4, -1.2, -5.6, 2.6); D.hedge(1.2, -6.4, 14, -5.6, 2.6);
     L.box([-1.6, 0, -6.4], [-1.2, 3.0, -5.6], 'concreteDark'); L.box([1.2, 0, -6.4], [1.6, 3.0, -5.6], 'concreteDark');
     L.door('g1', { x: 0, z: -6.0, w: 2.4, h: 2.6, style: 'lift', sticky: true, leafMat: 'metalDark', frameMat: 'metalDark', cond: (LL) => LL.sensorOn('s1') });
-    L.box([2.1, 0, -5.2], [2.7, 2.6, -4.6], 'concrete');
-    L.lightSensor('s1', { x: 2.4, y: 2.6, z: -4.9, need: 3.0, onChange: (on, LL) => { if (on) { LL.setStage(1); LL.say(['Bigger light, bigger bloom.', 'Horticulture is mostly geometry.'], { id: 'bloom1' }); } } });
+    L.box([2.1, 0, -5.2], [2.7, 2.2, -4.6], 'concrete');
+    L.lightSensor('s1', { x: 2.4, y: 2.2, z: -4.9, need: 3.0, onChange: (on, LL) => { if (on) { LL.setStage(1); LL.say(['Bigger light, bigger bloom.', 'Horticulture is mostly geometry.'], { id: 'bloom1' }); } } });
     D.bench(3.6, 2.2, Math.PI, { w: 1.6 });
     L.prop('lantern', [3.6, 0.48, 2.2], { id: 'lantern' });
     D.fountain(-6.5, 0.8, 1.7);

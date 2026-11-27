@@ -41,7 +41,7 @@ export default {
     D.painting(6.97, 2.0, 0.5, -Math.PI / 2, { w: 1.8, h: 1.2, seed: 23, style: 'stripes', light: true });
     D.painting(3.6, 2.2, 3.97, Math.PI, { w: 1.3, h: 0.9, seed: 24, style: 'eye' });
     D.painting(-3.6, 2.2, 3.97, Math.PI, { w: 1.3, h: 0.9, seed: 25, style: 'landscape' });
-    D.sign('FRAGMENTS OF A BLOCK, SEEN CORRECTLY', -3.2, 1.0, 1.4, Math.PI * 0.25, { w: 0.9, h: 0.14, bg: '#f7f4ee', color: '#3a3530', font: 'italic 600 40px Cormorant, Georgia' });
+    D.sign('FRAGMENTS OF A BLOCK, SEEN CORRECTLY', -6.96, 1.35, 3.0, Math.PI / 2, { w: 0.9, h: 0.14, bg: '#f7f4ee', color: '#3a3530', font: 'italic 600 40px Cormorant, Georgia' });
     D.bench(-4.2, 2.5, Math.PI * 0.25, { w: 1.6 });
     D.rug(0, -0.5, 4.5, 3.0, 0x384a5c);
     // sculpture plinth with crane

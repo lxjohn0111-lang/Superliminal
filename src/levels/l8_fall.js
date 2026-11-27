@@ -17,6 +17,7 @@ export default {
   par: [120, 250],
   cranes: 3,
   floorY: 0,
+  noAO: true,
   hints: [
     'Grab the plank while standing right at the desk. Walk to the edge of the island, look down across the gap toward the lower island, and drop it — it should land resting on both islands.',
     'From the second island, find the spot where the floating fragments line up into a staircase. Try near the lone lamp.',

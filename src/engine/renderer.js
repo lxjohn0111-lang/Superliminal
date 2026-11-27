@@ -58,6 +58,7 @@ export class Renderer {
       ao.configuration.halfRes = q.aoMode !== 'High';
       ao.configuration.gammaCorrection = false;
       ao.setQualityMode(q.aoMode);
+      ao.enabled = !this.aoDisabled;
       composer.addPass(ao);
       this.aoPass = ao;
     }

@@ -168,6 +168,8 @@ export class Game {
     if (progress) progress(0.9, 'Lighting the room…');
     await new Promise((r) => setTimeout(r, 0));
     this.renderer.applyShadowSize();
+    this.renderer.aoDisabled = !!def.noAO;
+    if (this.renderer.aoPass) this.renderer.aoPass.enabled = !def.noAO;
     if (L.skyMesh) this.bakeSky(L);
     this.bakeEnvironment(L); dbg('env');
     // Warm up: compile shaders and run a few physics steps so props settle.
