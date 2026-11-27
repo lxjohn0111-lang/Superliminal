@@ -178,12 +178,12 @@ export class Level {
     }
   }
 
-  spot(pos, target, { color = 0xfff1df, intensity = 30, angle = 1.0, penumbra = 0.9, distance = 0, decay = 2, shadow = true, bias = -0.0004, radius = 4, maxShadow = 2048, near = 0.3 } = {}) {
+  spot(pos, target, { color = 0xfff1df, intensity = 30, angle = 1.0, penumbra = 0.9, distance = 0, decay = 2, shadow = true, bias = -0.0008, radius = 4, maxShadow = 2048, near = 0.3 } = {}) {
     const l = new THREE.SpotLight(color, intensity * 2.2, distance, Math.min(angle, 1.05), penumbra, decay);
     l.position.set(...pos); l.target.position.set(...target);
     l.castShadow = shadow;
     if (shadow) {
-      l.shadow.mapSize.set(1024, 1024); l.shadow.bias = bias; l.shadow.normalBias = 0.02; l.shadow.radius = radius;
+      l.shadow.mapSize.set(1024, 1024); l.shadow.bias = bias; l.shadow.normalBias = 0.06; l.shadow.radius = radius;
       l.shadow.camera.near = near; l.shadow.camera.far = 60; l.userData.maxShadow = maxShadow;
     }
     this.root.add(l, l.target); this.lights.push(l);

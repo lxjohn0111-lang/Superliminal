@@ -142,10 +142,10 @@ export class Game {
     if (!initial) { this.renderer.resize(); this.persist(); }
   }
 
-  persist() {
+  persist(immediate = false) {
     this.save.settings = this.settings;
     this.save.stats = this.stats;
-    this.platform.save(this.save);
+    this.platform.save(this.save, immediate);
   }
 
   // ----------------------------------------------------------------- levels
@@ -264,7 +264,7 @@ export class Game {
     this.save.level = last ? L.index : L.index + 1;
     if (time <= def.par[0]) this.achievements.unlock('gold');
     if (this.levels.every((d) => this.save.best[d.id] != null && this.save.best[d.id] <= d.par[0])) this.achievements.unlock('all_gold');
-    this.persist();
+    this.persist(true);
     this.hud._fading = true;
     await this.hud.fadeTo(1, 'white', 1400);
     this.hud._fading = false;
@@ -298,7 +298,7 @@ export class Game {
     this.save.finished = true;
     this.achievements.unlock('finish');
     if (!this.save.hints) this.achievements.unlock('nohints');
-    this.persist();
+    this.persist(true);
     this.transitioning = true;
     this.audio.setMood('wake');
     this.menu.rollCredits(() => {
@@ -323,7 +323,7 @@ export class Game {
   // ----------------------------------------------------------------- collectibles, hints, feedback
   collectCrane(id) {
     this.save.cranes[id] = 1;
-    this.persist();
+    this.persist(true);
     this.audio.collect();
     const def = this.level.def;
     const got = this.cranesIn(def.id);
@@ -371,8 +371,16 @@ export class Game {
     requestAnimationFrame((t) => this.frame(t));
     let dt = (now - this.last) / 1000;
     this.last = now;
+    if (this.manual) return;   // frames are driven by debugFrame() (video capture)
     if (dt > 0.1) dt = 0.1;
     if (dt <= 0) return;
+    this.tick(dt);
+  }
+
+  // Deterministic stepping for automated capture: run exactly one frame of `dt` seconds.
+  debugFrame(dt) { this.manual = true; this.tick(dt); }
+
+  tick(dt) {
     const L = this.level;
     const input = this.input;
     const pad = input.pollGamepad();

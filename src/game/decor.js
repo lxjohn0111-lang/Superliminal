@@ -35,7 +35,7 @@ export class Decor {
   reception(x, z, rotY = 0) {
     const g = new THREE.Group();
     g.add(mesh(roundedBox(2.6, 1.05, 0.7, 0.03), mat('woodDark'), { pos: [0, 0.525, 0] }));
-    g.add(mesh(roundedBox(2.7, 0.04, 0.82, 0.015), mat('marble'), { pos: [0, 1.07, 0.02] }));
+    g.add(mesh(roundedBox(2.7, 0.04, 0.82, 0.015), mat('porcelain'), { pos: [0, 1.07, 0.02] }));
     g.add(mesh(new THREE.BoxGeometry(2.4, 0.06, 0.02), emissiveMat(0xffd9a0, 1.2), { pos: [0, 0.95, 0.36] }));
     this.place(g, x, 0, z, rotY);
     this.solid(x, 0.55, z, rotY ? 0.4 : 1.35, 0.55, rotY ? 1.35 : 0.4, 'wood');

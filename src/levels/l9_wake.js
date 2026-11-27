@@ -37,7 +37,7 @@ export default {
     D.plant(3.0, -9.4, { size: 1.0, seed: 93 });
     L.prop('pillow', [-2.45, 0.56, -1.2]);
     L.prop('book', [-3.0, 0.5, 0.4], { variant: 3, rotY: 1.0 });
-    L.plate('wake', { x: -1.2, z: -8.3, need: 700, size: 1.6, label: 'WAKE' });
+    L.plate('wake', { x: -1.2, z: -8.3, need: 450, size: 1.6, label: 'WAKE' });
     L.door('d1', { x: 1.6, z: -10.1, w: 1.4, h: 2.3, plates: ['wake'], sticky: true, leafMat: 'woodPale', frameMat: 'brass' });
     L.crane([3.0, 2.3, 1.0]);
     // dawn light through the windows

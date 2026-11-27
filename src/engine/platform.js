@@ -37,6 +37,9 @@ export class Platform {
         });
       } catch (e) { /* optional */ }
     }
+    const flushNow = () => this.flush();
+    window.addEventListener('pagehide', flushNow);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) flushNow(); });
     return this;
   }
 
@@ -79,20 +82,34 @@ export class Platform {
 
   async rewardedAd() { return this._ad('rewarded'); }
 
-  // ---- persistence (SDK data module when present, localStorage mirror otherwise) ----
+  // ---- persistence ----
+  // On CrazyGames the SDK data module is the single source of truth (it syncs to the player's account
+  // and handles guests itself). Elsewhere we fall back to localStorage.
+  get useSdkData() { return !!(this.sdk && this.sdk.data); }
+
   load() {
     const hot = window.__hotData && window.__hotData.save;
     if (hot && typeof hot === 'object') return hot;
     let raw = null;
-    try { if (this.sdk && this.sdk.data) raw = this.sdk.data.getItem(SAVE_KEY); } catch (e) { /* ignore */ }
-    if (!raw) { try { raw = window.localStorage.getItem(SAVE_KEY); } catch (e) { /* ignore */ } }
+    if (this.useSdkData) { try { raw = this.sdk.data.getItem(SAVE_KEY); } catch (e) { console.warn('[platform] data.getItem failed', e); } }
+    else { try { raw = window.localStorage.getItem(SAVE_KEY); } catch (e) { /* storage blocked */ } }
     if (!raw) return null;
     try { return JSON.parse(raw); } catch (e) { return null; }
   }
 
-  save(obj) {
-    const raw = JSON.stringify(obj);
-    try { if (this.sdk && this.sdk.data) this.sdk.data.setItem(SAVE_KEY, raw); } catch (e) { /* ignore */ }
-    try { window.localStorage.setItem(SAVE_KEY, raw); } catch (e) { /* ignore */ }
+  // Saves are coalesced (many small changes -> one write) and flushed when the page is hidden or closed.
+  save(obj, immediate = false) {
+    this.pendingSave = obj;
+    if (immediate) { this.flush(); return; }
+    if (!this.saveTimer) this.saveTimer = setTimeout(() => this.flush(), 800);
+  }
+
+  flush() {
+    if (this.saveTimer) { clearTimeout(this.saveTimer); this.saveTimer = null; }
+    if (!this.pendingSave) return;
+    const raw = JSON.stringify(this.pendingSave);
+    this.pendingSave = null;
+    if (this.useSdkData) { try { this.sdk.data.setItem(SAVE_KEY, raw); } catch (e) { console.warn('[platform] data.setItem failed', e); } }
+    else { try { window.localStorage.setItem(SAVE_KEY, raw); } catch (e) { /* storage blocked */ } }
   }
 }
