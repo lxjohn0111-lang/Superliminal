@@ -404,7 +404,7 @@ export class Decor {
     };
     const m = new THREE.ShaderMaterial({
       uniforms, side: THREE.BackSide, depthWrite: false, fog: false,
-      vertexShader: 'varying vec3 vDir; void main(){ vDir = normalize(position); vec4 p = projectionMatrix * modelViewMatrix * vec4(position,1.0); gl_Position = p.xyww; }',
+      vertexShader: 'varying vec3 vDir; void main(){ vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
       fragmentShader: `varying vec3 vDir; uniform vec3 top, mid, bot, sunCol, sunDir; uniform float stars, sunSize, intensity;
         float h(vec3 p){ p = fract(p*0.3183099+.1); p *= 17.0; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
         void main(){ float y = vDir.y; vec3 c = y > 0.0 ? mix(mid, top, pow(y, 0.6)) : mix(mid, bot, pow(-y, 0.5));
